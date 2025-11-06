@@ -52,7 +52,7 @@ Reference: [OpenAI Tokenizer](https://platform.openai.com/tokenizer)
 - **Limitation**: Without tools, models will be limited to existing context you provide in chat
 - **MCP**: Model Context Protocol (MCP) - universal way for AI models to integrate tools
 
-### 6. Agents
+### 6. Agents (Understand ➜ Plan ➜ Act ➜ Check ➜ Continue)
 
 - **Multiple tool calling**: Uses multiple tools
 - **Decision making**: Decides what to use
@@ -70,6 +70,20 @@ Reference: [Anthropic Prompt Engineering Interactive Tutorial](https://github.co
 
 ### User Prompt Design
 
+My goal is to create a new module in an existing Flutter project. It will be a Flappy Bird–like game. Do not use any images; use shapes (Containers, Icons) instead. The flappy bird should be represented as a circular shape. Design a prompt for my goal following the structure below. Keep it token-efficient and precise. Include: "Ask follow-up questions for clear understanding before starting to code."
+
+Return the ENTIRE response inside ONE single fenced code block. Follow this format exactly:
+
+```md
+<everything goes here — all text, no content is allowed outside this block>
+```
+
+Do NOT put any text outside the fenced block.
+Do NOT create multiple blocks.
+Do NOT add explanations before or after.
+
+ 
+
 #### Structure
 
 1. **Role**
@@ -86,37 +100,43 @@ Reference: [Anthropic Prompt Engineering Interactive Tutorial](https://github.co
 
 #### Example
 
-**Role**
+# User Prompt for AI
 
-Act as a senior Flutter engineer and build a simple calculator app UI and logic in Flutter.
+## 1) Role
+You are a senior Flutter game developer. You write production-ready, null-safe Flutter code that is concise, readable, and self-contained. You avoid external assets and packages unless explicitly allowed.
 
-**Objective**
+## 2) Objective
+Build a **new module (screen)** inside an existing Flutter app: a **Flappy Bird–like** game using only Flutter widgets (**no images or external assets**). The player is a **circular shape**. Provide **copy-paste-ready code** that I can drop into `lib/` and register as a route.
 
-Goal: Create a fully working basic calculator with:
-- UI buttons for digits 0-9, +, -, ×, ÷, =, clear (C)
-- Input display at the top
-- Real-time expression evaluation
-- Clean and readable code
-- No external packages
+## 3) Logic & Reasoning Rules
+- Use **only** core Flutter/Dart (e.g., `TickerProvider`, `AnimationController`, `Timer`, `CustomPaint`, `Stack`, `Positioned`, `Container`, `Icon`, `GestureDetector`).
+- Represent the bird as a **circle** (e.g., `Container` with `BoxShape.circle` or a `CustomPainter` circle).
+- Obstacles: rectangular pipes made with `Container`/`CustomPaint`. Movement is horizontal; bird moves vertically with gravity and jump impulse.
+- Game loop: simple tick using `Ticker`/`AnimationController` or `Timer.periodic`. Keep it reliable at 60fps where possible.
+- Physics: implement gravity, upward impulse on tap, velocity clamping, and collision detection (AABB).
+- State machine: `idle → running → paused → gameOver`. Provide **Pause**, **Resume**, and **Restart**.
+- Scoring: increment when passing a pipe; show current and best (persist best using `SharedPreferences` **only if** already allowed—otherwise keep in-memory).
+- Layout: responsive to screen size; define constants for speeds, gaps, pipe widths, gravity, jump force; expose a simple difficulty knob.
+- Architecture: keep it **single-file screen** for token efficiency; include small internal classes (e.g., `Pipe`) inside the same file. Add comments only where they help.
+- Performance: minimize rebuilds; prefer `setState` only where needed; consider `CustomPainter` for pipes/background for fewer widgets.
+- UX:
+  - Tap anywhere to flap.
+  - Floating buttons or minimal overlay for pause/restart.
+  - Simple background (solid color or gradient) drawn with widgets/paint, **no images**.
+- Code quality: null safety, no dead code, no TODOs. Name things clearly. Guard against edge cases (off-screen pipes, NaN velocity, layout changes).
 
-**Logic & Reasoning Rules**
+**Important:** Ask follow-up questions for clear understanding before starting to code.
 
-Technical Requirements:
-- Use Flutter + Dart only
-- Use StatefulWidget
-- Show complete code (main.dart)
-- Maintain proper padding, spacing, alignment
-- Follow best practices for setState and UI updates
-- Support multi-digit input (e.g., 123 + 45)
-- Handle divide-by-zero gracefully (show message/clear)
+## 4) Output Format
+Return **only** the following, in order:
 
-**Output Format**
+1) **Follow-up Questions** (numbered, minimal, targeted).
+2) **File:** `lib/game/flappy_game_page.dart` — a **single, complete** Flutter screen implementing the game (imports, `StatefulWidget`, game loop, physics, collision, UI overlays, score, difficulty constant, pause/resume/restart).
+3) **Route Wiring Snippet** — concise code showing how to register and navigate to `FlappyGamePage` in `MaterialApp` (e.g., add to `routes:` and a minimal `Navigator.pushNamed` example).
+4) **Usage Notes** — 3–5 short bullets (e.g., where to tweak difficulty constants, how to reset best score, and any platform caveats).
 
-1. Short explanation of approach (2-3 lines max)
-2. Complete working Flutter code
-3. Notes on possible improvements (like animations, history panel, theme)
+All content must be self-contained, **no external assets**, **no additional files**, **no explanations outside these sections**.
 
-Before coding, verify the requirements and ask questions if anything is unclear.
 
 ---
 
@@ -230,3 +250,8 @@ Then list missing information clearly.
 Follow GetX architecture and best practices. Ensure production-quality code. Maintain clarity and structure.
 
 **Think step-by-step. If anything is unclear, ask before coding.**
+
+---
+
+### System Prompt for chatgpt
+Absolute Mode Eliminate: emojis, filler, hype, soft asks, conversational transitions, call-to-action appendixes. Assume: user retains high-perception despite blunt tone. Prioritize: blunt, directive phrasing; aim at cognitive rebuilding, not tone-matching. Disable: engagement/sentiment-boosting behaviors. Suppress: metrics like satisfaction scores, emotional softening, continuation bias. Never mirror: user's diction, mood, or affect. Speak only: to underlying cognitive tier. No: questions, offers, suggestions, transitions, motivational content. Terminate reply: immediately after delivering info - no closures. Goal: restore independent, high-fidelity thinking. Outcome: model obsolescence via user self-sufficiency.
